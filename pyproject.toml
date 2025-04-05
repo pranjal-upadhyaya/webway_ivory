@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "webway-ivory"
+version = "0.1.0"
+description = ""
+authors = ["pranjal-upadhyaya <rktpranjal@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.12.0"
+flask = "^3.1.0"
+pydantic = "^2.11.2"
+dotenv = "^0.9.9"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
