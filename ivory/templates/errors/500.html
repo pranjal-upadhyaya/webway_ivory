@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error | Webway Ivory{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 100px 20px;">
+    <h1 style="font-size: 6rem; margin-bottom: 1rem; color: #cb2431;">500</h1>
+    <h2 style="margin-bottom: 2rem;">Server Error</h2>
+    <p style="margin-bottom: 2rem;">Something went wrong on our end. Please try again later.</p>
+    <a href="{{ url_for('views.index') }}" style="display: inline-block; background-color: #0366d6; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;">Return to Home</a>
+</div>
+{% endblock %} 

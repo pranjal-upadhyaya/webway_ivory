@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}GitHub Repositories | Webway Ivory{% endblock %}
+
+{% block content %}
+<div class="repo-container">
+    <div class="repo-header">
+        <h1>My GitHub Repositories</h1>
+        
+        <div class="search-container">
+            <form action="{{ url_for('github.repos') }}" method="get" class="search-form">
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="Search repositories..." 
+                    value="{{ search_query or '' }}" 
+                    class="search-input">
+                <button type="submit" class="search-button">Search</button>
+                {% if search_query %}
+                <a href="{{ url_for('github.repos') }}" class="clear-search">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    
+    {% if error %}
+    <div class="error-message">
+        {{ error }}
+    </div>
+    {% endif %}
+    
+    {% if repositories %}
+    <div class="repo-list">
+        {% for repo in repositories %}
+        <div class="repo-card">
+            <div class="repo-name">
+                <a href="{{ url_for('github.repo_detail', repo_name=repo.name) }}">{{ repo.name }}</a>
+            </div>
+            <div class="repo-description">
+                {{ repo.description or "No description provided" }}
+            </div>
+            <div class="repo-meta">
+                {% if repo.language %}
+                <span>
+                    <span class="language-color" data-language="{{ repo.language }}"></span>
+                    {{ repo.language }}
+                </span>
+                {% endif %}
+                <span>⭐ {{ repo.stars }}</span>
+                <span>🍴 {{ repo.forks }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif search_query %}
+    <div class="no-results">
+        No repositories found matching "{{ search_query }}".
+    </div>
+    {% else %}
+    <div class="loading">
+        Loading repositories...
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // This could be used to add client-side functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set language colors dynamically
+        const languageColors = {
+            "Python": "#3572A5",
+            "JavaScript": "#f1e05a",
+            "TypeScript": "#2b7489",
+            "HTML": "#e34c26",
+            "CSS": "#563d7c",
+            "Java": "#b07219",
+            "C++": "#f34b7d",
+            "C#": "#178600",
+            "Go": "#00ADD8",
+            "Ruby": "#701516",
+            "PHP": "#4F5D95",
+            "Swift": "#ffac45",
+            "Kotlin": "#F18E33",
+            "Rust": "#dea584"
+        };
+        
+        document.querySelectorAll('.language-color').forEach(el => {
+            const language = el.getAttribute('data-language');
+            el.style.backgroundColor = languageColors[language] || '#ccc';
+        });
+        
+        console.log('GitHub repositories page loaded');
+    });
+</script>
+{% endblock %} 

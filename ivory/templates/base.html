@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Webway Ivory{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/github.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="container">
+                <div class="logo">
+                    <a href="{{ url_for('views.index') }}">Webway Ivory</a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('github.repos') }}">GitHub Repos</a></li>
+                    <li><a href="#">Projects</a></li>
+                    <li><a href="#">Users</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; {{ ''|current_year }} Webway Ivory</p>
+        </div>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html> 

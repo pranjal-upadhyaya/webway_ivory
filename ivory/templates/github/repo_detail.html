@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ repository.name if repository else "Repository Not Found" }} | GitHub | Webway Ivory{% endblock %}
+
+{% block content %}
+<div class="repo-container">
+    {% if error %}
+    <div class="error-message">
+        {{ error }}
+        <p><a href="{{ url_for('github.repos') }}">Back to Repositories</a></p>
+    </div>
+    {% elif repository %}
+    <div class="repo-header">
+        <h1>{{ repository.name }}</h1>
+        <p>{{ repository.description or "No description provided" }}</p>
+    </div>
+    
+    <div class="repo-detail">
+        <div class="repo-stats">
+            {% if repository.language %}
+            <div class="stat-item">
+                <h3>Language</h3>
+                <div class="language-display">
+                    <span class="language-color" data-language="{{ repository.language }}"></span>
+                    {{ repository.language }}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="stat-item">
+                <h3>Stars</h3>
+                <span>⭐ {{ repository.stars }}</span>
+            </div>
+            
+            <div class="stat-item">
+                <h3>Forks</h3>
+                <span>🍴 {{ repository.forks }}</span>
+            </div>
+            
+            <div class="stat-item">
+                <h3>Visibility</h3>
+                <span>{{ "Private" if repository.is_private else "Public" }}</span>
+            </div>
+        </div>
+        
+        <div class="repo-dates">
+            <p><strong>Created:</strong> {{ repository.created_at }}</p>
+            <p><strong>Last Updated:</strong> {{ repository.updated_at }}</p>
+        </div>
+        
+        <div class="repo-actions">
+            <a href="{{ repository.html_url }}" target="_blank" class="btn btn-primary">View on GitHub</a>
+            <a href="{{ url_for('github.repos') }}" class="btn btn-secondary">Back to Repositories</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set language colors dynamically
+        const languageColors = {
+            "Python": "#3572A5",
+            "JavaScript": "#f1e05a",
+            "TypeScript": "#2b7489",
+            "HTML": "#e34c26",
+            "CSS": "#563d7c",
+            "Java": "#b07219",
+            "C++": "#f34b7d",
+            "C#": "#178600",
+            "Go": "#00ADD8",
+            "Ruby": "#701516",
+            "PHP": "#4F5D95",
+            "Swift": "#ffac45",
+            "Kotlin": "#F18E33",
+            "Rust": "#dea584"
+        };
+        
+        document.querySelectorAll('.language-color').forEach(el => {
+            const language = el.getAttribute('data-language');
+            el.style.backgroundColor = languageColors[language] || '#ccc';
+        });
+    });
+</script>
+{% endblock %} 

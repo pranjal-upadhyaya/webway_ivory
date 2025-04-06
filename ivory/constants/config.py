@@ -1,8 +1,7 @@
 from pydantic_settings import BaseSettings
 
 class AppConfig(BaseSettings):
-    ebony_app_port: int
-    ebony_app_host: str
+    ebony_base_url: str
     app_host: str
     app_port: int
     app_env: str
