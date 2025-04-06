@@ -316,7 +316,7 @@ uvicorn = "^0.34.0"
 type = "git"
 url = "https://github.com/pranjal-upadhyaya/webway.git"
 reference = "dev"
-resolved_reference = "c0d2092af9307f34ebf0c437e8a33ff61aef8ed2"
+resolved_reference = "6e5582861fcfa3e3544060fdec6235a62e508e1a"
 
 [[package]]
 name = "fastapi"

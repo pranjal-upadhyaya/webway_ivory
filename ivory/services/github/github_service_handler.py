@@ -1,5 +1,7 @@
 """Implementation of GitHub service operations."""
 
+from ebony.models.github.github_models import GetGithubRepositoriesResponse
+
 from typing import Optional, List
 from loguru import logger
 
@@ -13,23 +15,22 @@ class GitHubServiceHandler(GitHubService):
     """Implementation of GitHub service operations."""
     api_client: APIClient
     
-    def get_repositories(self) -> RepositoryList:
+    def get_repositories(self) -> GetGithubRepositoriesResponse:
         """Get a list of GitHub repositories."""
         logger.debug(f"Fetching repositories from {app_config.ebony_base_url}")
-        response = self.api_client.get(f"{app_config.ebony_base_url}/github/repos")
-        logger.info(f"Retrieved {len(response)} repositories")
-        logger.debug(f"GitHub repositories response: {response}")
-        repositories = response.get("data", [])
-        return RepositoryList.from_api_response(repositories)
+        ebony_response = self.api_client.get(f"{app_config.ebony_base_url}/github/repos")
+        logger.info(f"Retrieved {len(ebony_response)} repositories")
+        response_data = ebony_response["data"]
+        return GetGithubRepositoriesResponse(**response_data)
     
     def get_repository(self, repo_name: str) -> Optional[Repository]:
         """Get a specific GitHub repository by name."""
         logger.debug(f"Looking for repository: {repo_name}")
         repositories = self.get_repositories()
-        for repo in repositories.repositories:
-            if repo.name == repo_name:
+        for repository in repositories.repositories:
+            if repository.name == repo_name:
                 logger.info(f"Found repository: {repo_name}")
-                return repo
+                return repository
         logger.warning(f"Repository not found: {repo_name}")
         return None
         
@@ -40,12 +41,12 @@ class GitHubServiceHandler(GitHubService):
         # For now, we'll just filter the repositories we already have
         all_repos = self.get_repositories()
         matching_repos = [
-            repo for repo in all_repos.repositories 
+            repo for repo in all_repos.repositories
             if query.lower() in repo.name.lower() or 
                (repo.description and query.lower() in repo.description.lower())
         ]
         logger.info(f"Found {len(matching_repos)} repositories matching query: {query}")
-        return RepositoryList(repositories=matching_repos)
+        return GetGithubRepositoriesResponse(repositories = matching_repos)
     
     def get_repository_languages(self, repo_name: str) -> List[str]:
         """Get the languages used in a specific GitHub repository."""
