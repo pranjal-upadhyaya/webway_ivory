@@ -6,7 +6,8 @@ from injector import Injector
 
 from ivory.views import register_blueprints
 from ivory.constants.config import app_config
-from ivory.modules import get_injector_instance, injector_instances
+from ivory.modules import injector_instances
+from ivory.utils.logging import configure_logging
 
 # Global injector instance
 injector = injector_instances
@@ -17,6 +18,9 @@ def create_app():
     
     # Load config
     app.config.from_object(app_config)
+    
+    # Configure logging
+    configure_logging(app, app_config.log_level)
     
     # Make injector available in request context
     @app.before_request

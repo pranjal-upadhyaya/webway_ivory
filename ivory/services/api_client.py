@@ -3,7 +3,7 @@
 import json
 from typing import Any, Dict, Optional, Union
 
-import flask
+import requests
 
 
 class APIError(Exception):
@@ -51,21 +51,22 @@ class APIClient:
         except json.JSONDecodeError:
             return {"message": "No content"}
     
-    def get(self, endpoint: str, params: Optional[Dict[str, Any]] = None) -> Dict:
+    def get(self, endpoint: str, path_params: Optional[Dict[str, Any]] = None) -> Dict:
         """Make a GET request to the API."""
         # For development, return mock data
         # In production, this would make a real HTTP request
-        if "github/repos" in endpoint:
-            return self._mock_github_repos()
+        
+        if path_params:
+            for key, value in path_params.items():
+                endpoint = endpoint.replace(f"{{{key}}}", value)
         
         # This is a placeholder for actual HTTP requests
         # In a real implementation, we would use requests library
-        # response = requests.get(
-        #     f"{self.base_url}/{endpoint.lstrip('/')}",
-        #     params=params,
-        #     headers=self._get_headers(),
-        # )
-        # return self._handle_response(response)
+        response = requests.get(
+            endpoint,
+            headers=self._get_headers(),
+        )
+        return self._handle_response(response)
         
         return {"message": "Mock API response"}
     

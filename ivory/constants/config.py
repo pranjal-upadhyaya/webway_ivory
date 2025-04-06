@@ -5,6 +5,7 @@ class AppConfig(BaseSettings):
     app_host: str
     app_port: int
     app_env: str
+    log_level: str = "INFO"  # Default log level
 
     class Config:
         env_file = ".env"

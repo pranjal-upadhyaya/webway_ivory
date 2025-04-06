@@ -1,6 +1,7 @@
 """Routes for GitHub-related views."""
 
 from flask import render_template, current_app, request, g
+from loguru import logger
 
 from . import github_bp
 from ivory.services.github import GitHubService
@@ -17,12 +18,16 @@ def repos():
         # Check if there's a search query
         search_query = request.args.get('q', '').strip()
         
+        logger.debug(f"GitHub repos route accessed, search query: '{search_query}'")
+        
         if search_query:
             # Get repositories matching the search query
             repository_list = github_service.search_repositories(search_query)
         else:
             # Get all repositories
             repository_list = github_service.get_repositories()
+        
+        logger.info(f"Rendering GitHub repos template with {len(repository_list.repositories)} repositories")
         
         # Pass repositories to the template
         return render_template(
@@ -33,7 +38,7 @@ def repos():
             error=None
         )
     except Exception as e:
-        current_app.logger.error(f"Error fetching GitHub repositories: {str(e)}")
+        logger.error(f"Error fetching GitHub repositories: {str(e)}", exc_info=True)
         return render_template(
             "github/repos.html",
             repositories=[],
@@ -47,6 +52,8 @@ def repos():
 def repo_detail(repo_name):
     """Display details for a specific GitHub repository."""
     try:
+        logger.debug(f"GitHub repo detail route accessed for repo: {repo_name}")
+        
         # Get the service from the injector
         github_service = g.injector.get(GitHubService)
         
@@ -54,12 +61,15 @@ def repo_detail(repo_name):
         repository = github_service.get_repository(repo_name)
         
         if not repository:
+            logger.warning(f"Repository not found: {repo_name}")
             return render_template(
                 "github/repo_detail.html",
                 repository=None,
                 language_colors=LANGUAGE_COLORS,
                 error=f"Repository '{repo_name}' not found."
             )
+        
+        logger.info(f"Rendering GitHub repo detail template for: {repo_name}")
         
         # Pass repository to the template
         return render_template(
@@ -69,7 +79,7 @@ def repo_detail(repo_name):
             error=None
         )
     except Exception as e:
-        current_app.logger.error(f"Error fetching GitHub repository '{repo_name}': {str(e)}")
+        logger.error(f"Error fetching GitHub repository '{repo_name}': {str(e)}", exc_info=True)
         return render_template(
             "github/repo_detail.html",
             repository=None,
